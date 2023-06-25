@@ -1,5 +1,5 @@
 package pl.joboffers.domain.offer;
 
-class OfferFacadeTest {
+public class OfferFacadeTest {
 
 }
