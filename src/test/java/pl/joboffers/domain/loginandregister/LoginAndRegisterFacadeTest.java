@@ -1,7 +1,6 @@
 package pl.joboffers.domain.loginandregister;
 
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import pl.joboffers.domain.loginandregister.loginandregisterdto.RegisterUserDto;
 import pl.joboffers.domain.loginandregister.loginandregisterdto.RegistrationResultDto;
 import pl.joboffers.domain.loginandregister.loginandregisterdto.UserDto;
@@ -14,11 +13,6 @@ public class LoginAndRegisterFacadeTest {
     LoginAndRegisterFacade loginAndRegisterFacade = new LoginAndRegisterFacade(new LoginAndRegisterRepositoryTestImp());
 
 
-//    @BeforeEach
-//    public void setUp() {
-//        userRepository = new LoginAndRegisterRepositoryTestImp();
-//        loginAndRegisterFacade = new LoginAndRegisterFacade(userRepository);
-//    }
     @Test
     public void should_find_user_by_username(){
         //given
@@ -46,7 +40,7 @@ public class LoginAndRegisterFacadeTest {
         //given
         String username = "TestUserName";
         //when
-        Throwable throwable = assertThrows(UserNotFoundException.class, () -> {
+        Throwable throwable = assertThrows(UsernameFoundException.class, () -> {
            UserDto result = loginAndRegisterFacade.findByUsername(username);
         });
         //then

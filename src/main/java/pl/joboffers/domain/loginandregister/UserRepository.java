@@ -1,7 +1,5 @@
 package pl.joboffers.domain.loginandregister;
 
-import pl.joboffers.domain.loginandregister.loginandregisterdto.UserDto;
-
 import java.util.Optional;
 
 public interface UserRepository {

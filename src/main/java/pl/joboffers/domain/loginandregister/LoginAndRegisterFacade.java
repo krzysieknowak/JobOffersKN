@@ -5,6 +5,8 @@ import pl.joboffers.domain.loginandregister.loginandregisterdto.RegisterUserDto;
 import pl.joboffers.domain.loginandregister.loginandregisterdto.RegistrationResultDto;
 import pl.joboffers.domain.loginandregister.loginandregisterdto.UserDto;
 
+
+
 @AllArgsConstructor
 public class LoginAndRegisterFacade {
     private static final String USER_NOT_FOUND = "User not found";
@@ -13,7 +15,7 @@ public class LoginAndRegisterFacade {
     public UserDto findByUsername(String username){
         return userRepository.findByUsername(username)
                 .map(user -> new UserDto(user.id(), user.username(), user.password()))
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameFoundException(USER_NOT_FOUND));
     }
     public RegistrationResultDto register(RegisterUserDto registerUserDto){
         final User user = User
