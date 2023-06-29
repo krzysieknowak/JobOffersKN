@@ -1,13 +1,14 @@
 package pl.joboffers.domain.offer;
 
 import lombok.AllArgsConstructor;
-import pl.joboffers.domain.offer.offerdto.SaveOfferDto;
-import pl.joboffers.domain.offer.offerdto.SavingOfferResultDto;
+import pl.joboffers.domain.offer.offerdto.SaveOfferRequestDto;
+import pl.joboffers.domain.offer.offerdto.SaveOfferResultDto;
 
-import java.security.SecureRandom;
-import java.util.Random;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /*
+ *REQUIREMENTS*
  oferty w bazie nie mogą się powtarzać (decyduje url oferty)
  klient może ręcznie dodać ofertę pracy
  każda oferta pracy ma (link do oferty, nazwę stanowiska, nazwę firmy, zarobki (mogą być widełki))
@@ -15,18 +16,34 @@ import java.util.Random;
  */
 @AllArgsConstructor
 public class OfferFacade {
-    private static final String OFFER_NOT_FOUND = "Offer not found";
-    private final OfferRepository offerRepository;
-    public SavingOfferResultDto saveOfferToDatabase(SaveOfferDto saveOfferDto){
 
-        final Offer offer = Offer
-                .builder()
-                .offerUrl(saveOfferDto.offerUrl())
-                .jobPosition(saveOfferDto.jobPosition())
-                .companyName(saveOfferDto.companyName())
-                .earnings(saveOfferDto.earnings())
-                .build();
+    private final OfferRepository offerRepository;
+    private final OfferService offerService;
+
+    public List<SaveOfferResultDto> fetchAllOffersAndSaveIfNotExist(){
+        return offerService.fetchAllOffersAndSaveIfNotExist()
+                .stream()
+                .map(OfferMapper::mapFromOfferToSavingOfferDto)
+                .toList();
+    }
+
+
+    public List<SaveOfferResultDto> findAllOffers(){
+        return offerRepository.findAllOffers()
+                .stream()
+                .map(OfferMapper::mapFromOfferToSavingOfferDto)
+                .collect(Collectors.toList());
+    }
+
+    public SaveOfferResultDto findOfferById(String id){
+        return offerRepository.findById(id)
+                .map(OfferMapper::mapFromOfferToSavingOfferDto)
+                .orElseThrow(()-> new OfferNotFoundException(id));
+    }
+
+    public SaveOfferResultDto saveOfferToDatabase(SaveOfferRequestDto saveOfferDto){
+        final Offer offer = OfferMapper.mapFromSavingOfferDtoToOffer(saveOfferDto);
         Offer savedOffer = offerRepository.save(offer);
-        return new SavingOfferResultDto(savedOffer.id(), savedOffer.offerUrl(), true);
+        return OfferMapper.mapFromOfferToSavingOfferDto(savedOffer);
     }
 }
