@@ -16,7 +16,7 @@ public class OfferMapper {
                 .build();
     }
 
-    public static SaveOfferResultDto mapFromOfferToSavingOfferDto(Offer savedOffer) {
+    public static SaveOfferResultDto mapFromOfferToSaveOfferDto(Offer savedOffer) {
         return SaveOfferResultDto.builder()
                 .id(savedOffer.id())
                 .companyName(savedOffer.companyName())

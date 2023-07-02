@@ -41,7 +41,7 @@ public class LoginAndRegisterFacadeTest {
         String username = "TestUserName";
         //when
         Throwable throwable = assertThrows(UsernameFoundException.class, () -> {
-           UserDto result = loginAndRegisterFacade.findByUsername(username);
+            loginAndRegisterFacade.findByUsername(username);
         });
         //then
         assertEquals("User not found", throwable.getMessage());

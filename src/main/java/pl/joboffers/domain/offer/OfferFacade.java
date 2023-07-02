@@ -23,7 +23,7 @@ public class OfferFacade {
     public List<SaveOfferResultDto> fetchAllOffersAndSaveIfNotExist(){
         return offerService.fetchAllOffersAndSaveIfNotExist()
                 .stream()
-                .map(OfferMapper::mapFromOfferToSavingOfferDto)
+                .map(OfferMapper::mapFromOfferToSaveOfferDto)
                 .toList();
     }
 
@@ -31,19 +31,19 @@ public class OfferFacade {
     public List<SaveOfferResultDto> findAllOffers(){
         return offerRepository.findAllOffers()
                 .stream()
-                .map(OfferMapper::mapFromOfferToSavingOfferDto)
+                .map(OfferMapper::mapFromOfferToSaveOfferDto)
                 .collect(Collectors.toList());
     }
 
     public SaveOfferResultDto findOfferById(String id){
         return offerRepository.findById(id)
-                .map(OfferMapper::mapFromOfferToSavingOfferDto)
+                .map(OfferMapper::mapFromOfferToSaveOfferDto)
                 .orElseThrow(()-> new OfferNotFoundException(id));
     }
 
     public SaveOfferResultDto saveOfferToDatabase(SaveOfferRequestDto saveOfferDto){
         final Offer offer = OfferMapper.mapFromSavingOfferDtoToOffer(saveOfferDto);
         Offer savedOffer = offerRepository.save(offer);
-        return OfferMapper.mapFromOfferToSavingOfferDto(savedOffer);
+        return OfferMapper.mapFromOfferToSaveOfferDto(savedOffer);
     }
 }

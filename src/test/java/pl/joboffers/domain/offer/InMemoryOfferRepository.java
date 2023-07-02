@@ -8,6 +8,9 @@ public class InMemoryOfferRepository implements OfferRepository {
 
     @Override
     public Offer save(Offer entity) {
+        if(inMemoryDatabase.values().stream().anyMatch(offer -> offer.offerUrl().equals(entity.offerUrl()))){
+            throw new OfferDuplicateException(entity.offerUrl());
+        }
         UUID generatedId = UUID.randomUUID();
         Offer offer = Offer
                 .builder()

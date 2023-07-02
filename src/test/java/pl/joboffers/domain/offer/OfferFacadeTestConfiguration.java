@@ -4,7 +4,7 @@ import pl.joboffers.domain.offer.offerdto.JobOfferResponseDto;
 
 import java.util.List;
 
-public class OfferFacadeTestConfiguration {
+public class  OfferFacadeTestConfiguration {
 
     private final InMemoryFetchTestImp fetchTestImp;
     private final InMemoryOfferRepository offerRepository;
