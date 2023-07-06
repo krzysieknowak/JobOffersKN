@@ -7,8 +7,8 @@ import pl.joboffers.BaseIntegrationTest;
 public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest {
 
     @Test
-    public void should_user_log_in_and_get_all_available_job_offers(){
-        //        1. there are no offers in external HTTP server
+    public void should_user_see_offers_but_have_to_be_logged_in_beforehand_and_external_server_should_have_some_offers(){
+//        1. there are no offers in external HTTP server
 //        2. scheduler ran 1st time and made GET to external server and system added 0 offers to database
 //        3 user tries to get a JVT Token using GET /token and gets unauthorized(401)
 //        4 user tries to see offers with no token using GET /offers and get unauthorized(401)
