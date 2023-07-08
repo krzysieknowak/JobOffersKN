@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 class OfferService {
     private final OfferRepository offerRepository;
     private final OfferFetchable offerFetchable;
-    List<Offer> fetchAllOffersAndSaveIfNotExist() {
+    public List<Offer> fetchAllOffersAndSaveIfNotExist() {
         List<Offer> allJobOffers = fetchOffers();
         List<Offer> filteredJobOffers = filterNotExistingOffers(allJobOffers);
         try{

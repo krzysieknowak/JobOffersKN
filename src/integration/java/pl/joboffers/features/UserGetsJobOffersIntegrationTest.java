@@ -1,14 +1,30 @@
-package pl.joboffers.feature;
+package pl.joboffers.features;
 
 
+import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import pl.joboffers.BaseIntegrationTest;
+import pl.joboffers.TestOffersDto;
+import pl.joboffers.domain.offer.OfferFetchable;
 
-public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest {
+public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implements TestOffersDto {
+    @Autowired
+    OfferFetchable offerFetchable;
 
     @Test
     public void should_user_see_offers_but_have_to_be_logged_in_beforehand_and_external_server_should_have_some_offers(){
 //        1. there are no offers in external HTTP server
+//        given
+        wireMockServer.stubFor(WireMock.get("/offers")
+                        .willReturn(WireMock.aResponse()
+                                .withStatus(HttpStatus.OK.value())
+                                .withHeader("Content-Type", "application/json")
+                                .withBody(bodyWithZeroOffers())));
+        //when
+        offerFetchable.fetchOffers();
+        //then
 //        2. scheduler ran 1st time and made GET to external server and system added 0 offers to database
 //        3 user tries to get a JVT Token using GET /token and gets unauthorized(401)
 //        4 user tries to see offers with no token using GET /offers and get unauthorized(401)
