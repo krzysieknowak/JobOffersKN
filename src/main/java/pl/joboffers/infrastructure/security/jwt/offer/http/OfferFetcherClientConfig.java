@@ -9,9 +9,11 @@ import org.springframework.web.client.RestTemplate;
 import pl.joboffers.domain.offer.OfferFetchable;
 
 import java.time.Duration;
-
+@AllArgsConstructor
 @Configuration
 public class OfferFetcherClientConfig {
+
+    final private OfferFetcherRestTemplateConfigurationProperties properties;
 
     @Bean
     public RestTemplateResponseErrorHandler restTemplateResponseErrorHandler(){
@@ -21,14 +23,12 @@ public class OfferFetcherClientConfig {
     public RestTemplate restTemplate(RestTemplateResponseErrorHandler restTemplateResponseErrorHandler){
         return new RestTemplateBuilder()
                 .errorHandler(restTemplateResponseErrorHandler)
-                .setConnectTimeout(Duration.ofMillis(5000))
-                .setReadTimeout(Duration.ofMillis(5000))
+                .setConnectTimeout(Duration.ofMillis(properties.connectTimeout()))
+                .setReadTimeout(Duration.ofMillis(properties.readTimeout()))
                 .build();
     }
     @Bean
-    public OfferFetchable remoteOfferFetcherClient(RestTemplate restTemplate,
-                                                   @Value("${offer.http.client.config.uri}") String uri,
-                                                   @Value("${offer.http.client.config.port}") int port){
-        return new OfferFetcherRestTemplate(restTemplate, uri, port);
+    public OfferFetchable remoteOfferFetcherClient(RestTemplate restTemplate){
+        return new OfferFetcherRestTemplate(restTemplate, properties.uri(), properties.port());
     }
 }
