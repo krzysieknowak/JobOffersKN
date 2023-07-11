@@ -8,5 +8,14 @@ offer:
       config:
         connectTimeout: 5000
         readTimeout: 5000
-        uri: http://ec2-3-120-147-150.eu-central-1.compute.amazonaws.com:5057/offers
+        uri: http://ec2-3-120-147-150.eu-central-1.compute.amazonaws.com
         port: 5057
+
+http:
+  offers:
+    scheduler:
+      request:
+        delay: PT3H
+
+scheduling:
+  enabled: true

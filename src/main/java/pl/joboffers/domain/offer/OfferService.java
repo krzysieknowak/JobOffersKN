@@ -1,6 +1,7 @@
 package pl.joboffers.domain.offer;
 
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import pl.joboffers.domain.offer.offerdto.JobOfferResponseDto;
 import pl.joboffers.domain.offer.offerdto.SaveOfferResultDto;
 
@@ -15,7 +16,8 @@ class OfferService {
         List<Offer> allJobOffers = fetchOffers();
         List<Offer> filteredJobOffers = filterNotExistingOffers(allJobOffers);
         try{
-            return offerRepository.saveAll(filteredJobOffers);
+//            return offerRepository.saveAll(filteredJobOffers);
+            return allJobOffers;
         } catch(OfferDuplicateException e ){
             throw new OfferSavingException(e.getMessage(), allJobOffers);
         }
