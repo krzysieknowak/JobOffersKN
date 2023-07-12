@@ -1,8 +1,6 @@
 package pl.joboffers.domain.offer;
 
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 import pl.joboffers.domain.offer.offerdto.SaveOfferRequestDto;
 import pl.joboffers.domain.offer.offerdto.SaveOfferResultDto;
 
@@ -31,7 +29,7 @@ public class OfferFacade {
     }
 
     public List<SaveOfferResultDto> findAllOffers() {
-        return offerRepository.findAllOffers()
+        return offerRepository.findAll()
                 .stream()
                 .map(OfferMapper::mapFromOfferToSaveOfferDto)
                 .collect(Collectors.toList());
@@ -44,8 +42,8 @@ public class OfferFacade {
     }
 
     public SaveOfferResultDto saveOfferToDatabase(SaveOfferRequestDto saveOfferDto) {
-        final Offer offer = OfferMapper.mapFromSavingOfferDtoToOffer(saveOfferDto);
-        Offer savedOffer = offerRepository.save(offer);
+        final Offer offerDocument = OfferMapper.mapFromSavingOfferDtoToOffer(saveOfferDto);
+        Offer savedOffer = offerRepository.save(offerDocument);
         return OfferMapper.mapFromOfferToSaveOfferDto(savedOffer);
     }
 }
