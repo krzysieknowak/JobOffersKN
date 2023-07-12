@@ -1,5 +1,6 @@
 package pl.joboffers.domain.offer;
 
+import org.springframework.context.annotation.Bean;
 import pl.joboffers.domain.offer.offerdto.JobOfferResponseDto;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class  OfferFacadeTestConfiguration {
         this.fetchTestImp = new InMemoryFetchTestImp(fetchedJobOffers);
         this.offerRepository = new InMemoryOfferRepository();
     }
+
     OfferFacade offerFacadeForTests(){
         return new OfferFacade(new InMemoryOfferRepository(), new OfferService(offerRepository, fetchTestImp));
     }
