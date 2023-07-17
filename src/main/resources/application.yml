@@ -1,7 +1,10 @@
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   data:
     mongodb:
-      uri: mongodb://admin:admin@localhost:27017/joboffers
+      uri: mongodb://admin:admin@localhost:27017/offers
 offer:
   http:
     client:

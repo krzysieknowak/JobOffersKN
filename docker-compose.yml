@@ -11,9 +11,10 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: joboffers
+      MONGO_INITDB_DATABASE: offers
     volumes:
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+
   mongo-express:
     image: mongo-express
     restart: always
