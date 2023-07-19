@@ -13,12 +13,15 @@ import org.springframework.test.web.servlet.ResultActions;
 import pl.joboffers.BaseIntegrationTest;
 import pl.joboffers.TestOffersDto;
 import pl.joboffers.domain.offer.offerdto.SaveOfferResultDto;
+import pl.joboffers.infrastructure.security.jwt.apivalidation.OfferAPIValidationErrorResponse;
 import pl.joboffers.infrastructure.security.jwt.offer.scheduler.OfferScheduler;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -79,5 +82,49 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
                                             }
                                             """.trim()));
 //        12. user tries GET/offers/1 and gets 200(OK) and an offer with id 1
+
+        //13. user tries POST/offers and gets 201(CREATED)
+        //given
+        //when
+        ResultActions performAddOffer = mockMvc.perform(post("/offers")
+                .content("""
+                            {
+                                "offerUrl" : "dupa.pl",
+                                "jobPosition" : "koparkowy",
+                                "companyName": "gugl",
+                                "earnings": "4000"
+                            }
+                            """.trim())
+                .contentType(MediaType.APPLICATION_JSON));
+        //then
+        String json = performAddOffer.andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        SaveOfferResultDto parsedCreatedOfferJson = objectMapper.readValue(json, SaveOfferResultDto.class);
+        String idParsedOfferJson = parsedCreatedOfferJson.id();
+        assertAll(
+                ()-> assertThat(parsedCreatedOfferJson.offerUrl()).isEqualTo("dupa.pl"),
+                ()-> assertThat(parsedCreatedOfferJson.companyName()).isEqualTo("gugl"),
+                ()-> assertThat(parsedCreatedOfferJson.earnings()).isEqualTo("4000"),
+                ()-> assertThat(parsedCreatedOfferJson.jobPosition()).isEqualTo("koparkowy"),
+                ()-> assertThat(idParsedOfferJson).isNotNull()
+        );
+        //13. user tries GET/offers and gets 200(OK) with 1 offer
+        //given
+        ResultActions performGetOneOffer = mockMvc.perform(get("/offers"));
+        //when
+        String jsonOneOffer = performGetOneOffer.andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        //then
+
+        List<SaveOfferResultDto> parsedOneOfferFromJson= objectMapper.readValue(jsonOneOffer, new TypeReference<>(){});
+
+        assertAll(
+                ()-> assertThat(parsedOneOfferFromJson).hasSize(1),
+                ()-> assertThat(parsedOneOfferFromJson.stream().map(SaveOfferResultDto::id)).contains(idParsedOfferJson));
     }
 }
