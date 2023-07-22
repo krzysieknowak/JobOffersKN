@@ -26,7 +26,7 @@ public class OfferFetcherRestTemplate implements OfferFetchable {
     public List<JobOfferResponseDto> fetchOffers() {
         log.info("Started fetching offers from remote server");
         HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentType(MediaType.APPLICATION_JSON);
         final HttpEntity<HttpHeaders> requestEntity = new HttpEntity<>(headers);
         try {
             String urlForService = getUrlForService("/offers");

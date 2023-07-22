@@ -4,6 +4,7 @@ spring:
       matching-strategy: ant_path_matcher
   data:
     mongodb:
+      auto-index-creation: true
       uri: mongodb://admin:admin@localhost:27017/offers
 offer:
   http:
@@ -22,3 +23,7 @@ http:
 
 scheduling:
   enabled: true
+
+#logging:
+#  level:
+#    root: debug

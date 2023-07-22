@@ -13,21 +13,21 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-
+@RequestMapping("/offers")
 public class OfferRestController {
     private final OfferFacade offerFacade;
-    @GetMapping("/offers")
+    @GetMapping
     public ResponseEntity <List<SaveOfferResultDto>> findAllOffers(){
         List<SaveOfferResultDto> offers = offerFacade.findAllOffers();
         return ResponseEntity.ok(offers);
     }
 
-    @GetMapping("/offers/{id}")
+    @GetMapping("{id}")
     public ResponseEntity <SaveOfferResultDto> getOfferById(@PathVariable String id){
         SaveOfferResultDto resultOffer = offerFacade.findOfferById(id);
         return ResponseEntity.ok(resultOffer);
     }
-    @PostMapping("/offers")
+    @PostMapping
     public ResponseEntity <SaveOfferResultDto> addOffer(@RequestBody @Valid SaveOfferRequestDto saveOfferRequestDto){
         SaveOfferResultDto savedOffer = offerFacade.saveOfferToDatabase(saveOfferRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedOffer);
