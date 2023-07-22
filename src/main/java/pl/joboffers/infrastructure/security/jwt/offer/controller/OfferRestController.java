@@ -22,7 +22,7 @@ public class OfferRestController {
         return ResponseEntity.ok(offers);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity <SaveOfferResultDto> getOfferById(@PathVariable String id){
         SaveOfferResultDto resultOffer = offerFacade.findOfferById(id);
         return ResponseEntity.ok(resultOffer);
