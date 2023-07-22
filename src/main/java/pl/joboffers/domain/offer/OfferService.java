@@ -14,14 +14,10 @@ class OfferService {
     private final OfferFetchable offerFetchable;
     public List<Offer> fetchAllOffersAndSaveIfNotExist() {
         List<Offer> allJobOffers = fetchOffers();
-        List<Offer> filteredJobOffers = filterNotExistingOffers(allJobOffers);
-        try{
-            return offerRepository.saveAll(filteredJobOffers);
-//            return allJobOffers;
-        } catch(OfferDuplicateException e ){
-            throw new OfferSavingException(e.getMessage(), allJobOffers);
-        }
+        final List<Offer> filteredJobOffers = filterNotExistingOffers(allJobOffers);
+        return offerRepository.saveAll(filteredJobOffers);
     }
+
 
     private List<Offer> fetchOffers(){
         return offerFetchable.fetchOffers()

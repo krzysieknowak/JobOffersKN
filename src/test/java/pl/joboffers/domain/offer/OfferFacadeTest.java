@@ -1,17 +1,13 @@
 package pl.joboffers.domain.offer;
 
-import org.assertj.core.api.Assertions;
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.Test;
-import pl.joboffers.domain.offer.offerdto.JobOfferResponseDto;
+import org.springframework.dao.DuplicateKeyException;
 import pl.joboffers.domain.offer.offerdto.SaveOfferRequestDto;
 import pl.joboffers.domain.offer.offerdto.SaveOfferResultDto;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.ThrowableAssert.catchThrowable;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OfferFacadeTest {
@@ -29,7 +25,7 @@ public class OfferFacadeTest {
         assertThat(result.size() == 6);
     }
     @Test
-    public void should_fetch_6_offers_from_remote_server_and_save_0_in_db_when_theyre_already_saved(){
+    public void should_fetch_6_offers_from_remote_server_and_save_0_in_db_when_they_are_already_saved(){
         //given
         OfferFacadeTestConfiguration facadeTestConfiguration = new OfferFacadeTestConfiguration();
         OfferFacade offerFacade = facadeTestConfiguration.offerFacadeForTests();
@@ -55,12 +51,12 @@ public class OfferFacadeTest {
         String savedOfferResultId = saveOfferResultDto.id();
         assertThat(offerFacade.findOfferById(savedOfferResultId).id()).isEqualTo(savedOfferResultId);
         //when
-        Throwable throwable = assertThrows(OfferDuplicateException.class,() -> {
+        Throwable throwable = assertThrows(DuplicateKeyException.class,() -> {
             offerFacade.saveOfferToDatabase(new SaveOfferRequestDto(
                     "https://www.testurl.com","ewr","werwe","wer"));
         });
         //then
-        assertThat(throwable.getMessage()).contains("Offer with URL [https://www.testurl.com] already exists");
+        assertThat(throwable.getMessage()).contains("Offer with url [https://www.testurl.com] already exists");
     }
 
     @Test
