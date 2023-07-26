@@ -2,13 +2,8 @@ package pl.joboffers.features;
 
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
-import org.assertj.core.api.Assertions;
-import org.assertj.core.api.ObjectAssert;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,12 +17,10 @@ import org.testcontainers.utility.DockerImageName;
 import pl.joboffers.BaseIntegrationTest;
 import pl.joboffers.TestOffersDto;
 import pl.joboffers.domain.offer.offerdto.SaveOfferResultDto;
-import pl.joboffers.infrastructure.security.jwt.apivalidation.OfferAPIValidationErrorResponse;
 import pl.joboffers.infrastructure.security.jwt.offer.scheduler.OfferScheduler;
 
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

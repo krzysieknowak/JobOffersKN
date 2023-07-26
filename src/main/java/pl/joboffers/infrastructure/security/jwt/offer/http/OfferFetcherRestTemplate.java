@@ -7,6 +7,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.joboffers.domain.offer.OfferFetchable;
 import pl.joboffers.domain.offer.offerdto.JobOfferResponseDto;
@@ -39,14 +40,14 @@ public class OfferFetcherRestTemplate implements OfferFetchable {
                     });
             final List<JobOfferResponseDto> offers = response.getBody();
             if (offers == null) {
-                log.info("There are no offers on remote server;empty list is returned");
-                return Collections.emptyList();
+                log.info("There are no offers on remote server");
+                throw new ResponseStatusException(HttpStatus.NO_CONTENT);
             } else
                 log.info("Offers fetched from remote server: " + offers);
             return offers;
         } catch (ResourceAccessException e) {
             log.error("There was an error caught! Zero offers are returned");
-            return Collections.emptyList();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
