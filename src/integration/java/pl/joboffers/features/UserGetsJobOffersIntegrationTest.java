@@ -16,6 +16,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 import pl.joboffers.BaseIntegrationTest;
 import pl.joboffers.TestOffersDto;
+import pl.joboffers.domain.loginandregister.loginandregisterdto.RegistrationResultDto;
 import pl.joboffers.domain.offer.offerdto.SaveOfferResultDto;
 import pl.joboffers.infrastructure.offer.scheduler.OfferScheduler;
 
@@ -79,8 +80,32 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
                 """.trim()));
 
 
-//        4. user tries to see offers with no token using GET /offers and get unauthorized(401)
-//        5. user creates account using  POST /register, providing login and password
+//        4. user tries to see offers with no token using GET /offers and get forbidden (403)
+        //given & when
+        ResultActions performGetOffersWithNoToken = mockMvc.perform(get("/offers").contentType(MediaType.APPLICATION_JSON));
+        //then
+        performGetOffersWithNoToken.andExpect(status().isForbidden());
+
+
+//        5. user creates account using  POST /register, providing login and password and gets 201 CREATED
+        //given & when
+        ResultActions performRegister = mockMvc.perform(post("/register")
+                        .content(("""
+                            {
+                            "username" : "testUsername",
+                            "password" : "testPassword"
+                            }
+                                         """.trim())).contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        MvcResult mvcRegisterResult = performRegister.andExpect(status().isCreated()).andReturn();
+        String jsonRegisterResult = mvcRegisterResult.getResponse().getContentAsString();
+        RegistrationResultDto mappedFromJsonToInstance =objectMapper.readValue(jsonRegisterResult, RegistrationResultDto.class);
+        assertAll(
+                ()-> assertThat(mappedFromJsonToInstance.username()).isEqualTo("testUsername"),
+                ()-> assertThat(mappedFromJsonToInstance.isCreated()).isTrue(),
+                ()-> assertThat(mappedFromJsonToInstance.id()).isNotNull()
+        );
 //        6. user get token using POST /token providing login and password and system returned OK (200) and a JWT token code
 
 
