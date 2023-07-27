@@ -1,4 +1,4 @@
-package pl.joboffers.infrastructure.security.jwt.apivalidation;
+package pl.joboffers.infrastructure.apivalidation;
 
 import org.springframework.http.HttpStatus;
 

@@ -1,4 +1,4 @@
-package pl.joboffers.infrastructure.security.jwt.offer.controller.error;
+package pl.joboffers.infrastructure.offer.controller.error;
 
 import org.springframework.http.HttpStatus;
 

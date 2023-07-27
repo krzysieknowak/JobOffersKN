@@ -1,4 +1,4 @@
-package pl.joboffers.infrastructure.security.jwt.offer.controller;
+package pl.joboffers.infrastructure.offer.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/offers")
 public class OfferRestController {
+
     private final OfferFacade offerFacade;
+
     @GetMapping
     public ResponseEntity <List<SaveOfferResultDto>> findAllOffers(){
         List<SaveOfferResultDto> offers = offerFacade.findAllOffers();

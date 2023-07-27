@@ -1,6 +1,8 @@
 package pl.joboffers.domain.loginandregister;
 
 import org.junit.Test;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import pl.joboffers.domain.loginandregister.loginandregisterdto.RegisterUserDto;
 import pl.joboffers.domain.loginandregister.loginandregisterdto.RegistrationResultDto;
 import pl.joboffers.domain.loginandregister.loginandregisterdto.UserDto;
@@ -40,7 +42,7 @@ public class LoginAndRegisterFacadeTest {
         //given
         String username = "TestUserName";
         //when
-        Throwable throwable = assertThrows(UsernameFoundException.class, () -> {
+        Throwable throwable = assertThrows(BadCredentialsException.class, () -> {
             loginAndRegisterFacade.findByUsername(username);
         });
         //then
