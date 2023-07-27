@@ -3,10 +3,10 @@ package pl.joboffers.http.error;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.client.RestTemplate;
 import pl.joboffers.domain.offer.OfferFetchable;
-import pl.joboffers.infrastructure.security.jwt.offer.http.OfferFetcherClientConfig;
-import pl.joboffers.infrastructure.security.jwt.offer.http.OfferFetcherRestTemplate;
-import pl.joboffers.infrastructure.security.jwt.offer.http.OfferFetcherRestTemplateConfigurationProperties;
-import pl.joboffers.infrastructure.security.jwt.offer.http.RestTemplateResponseErrorHandler;
+import pl.joboffers.infrastructure.offer.http.OfferFetcherClientConfig;
+import pl.joboffers.infrastructure.offer.http.OfferFetcherRestTemplate;
+import pl.joboffers.infrastructure.offer.http.OfferFetcherRestTemplateConfigurationProperties;
+import pl.joboffers.infrastructure.offer.http.RestTemplateResponseErrorHandler;
 
 import java.time.Duration;
 

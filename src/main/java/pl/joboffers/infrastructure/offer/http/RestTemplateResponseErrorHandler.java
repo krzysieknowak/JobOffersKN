@@ -1,4 +1,4 @@
-package pl.joboffers.infrastructure.security.jwt.offer.http;
+package pl.joboffers.infrastructure.offer.http;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;

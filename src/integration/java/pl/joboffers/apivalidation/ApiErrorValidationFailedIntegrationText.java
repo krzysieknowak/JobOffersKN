@@ -5,7 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import pl.joboffers.BaseIntegrationTest;
-import pl.joboffers.infrastructure.security.jwt.apivalidation.OfferAPIValidationErrorResponse;
+import pl.joboffers.infrastructure.apivalidation.OfferAPIValidationErrorResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

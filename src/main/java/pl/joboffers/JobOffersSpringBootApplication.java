@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import pl.joboffers.infrastructure.security.jwt.offer.http.OfferFetcherRestTemplateConfigurationProperties;
+import pl.joboffers.infrastructure.offer.http.OfferFetcherRestTemplateConfigurationProperties;
 
 @SpringBootApplication
 @EnableConfigurationProperties(OfferFetcherRestTemplateConfigurationProperties.class)

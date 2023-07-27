@@ -1,4 +1,4 @@
-package pl.joboffers.infrastructure.security.jwt.apivalidation;
+package pl.joboffers.infrastructure.apivalidation;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

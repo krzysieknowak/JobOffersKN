@@ -5,15 +5,9 @@ import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import pl.joboffers.domain.offer.OfferFetchable;
-import pl.joboffers.domain.offer.offerdto.JobOfferResponseDto;
-import pl.joboffers.domain.offer.offerdto.SaveOfferRequestDto;
-import pl.joboffers.infrastructure.security.jwt.offer.http.OfferFetcherRestTemplateConfigurationProperties;
-
-import java.util.List;
+import pl.joboffers.infrastructure.offer.http.OfferFetcherRestTemplateConfigurationProperties;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.apache.hc.core5.http.HttpStatus.*;
@@ -34,7 +28,7 @@ public class FetchOffersRestTemplateErrorIntegrationTest {
             .remoteOfferFetcherClient(1000,1500, wireMockServer.getPort());
 
     @Test
-    public void should_throw_response_status_exception_when_fault_connection_reset_by_peer(){
+    public void should_throw_exception_500_when_fault_connection_reset_by_peer(){
         //given
         wireMockServer.stubFor(WireMock.get("/offers")
                 .willReturn(WireMock.aResponse()
@@ -49,7 +43,7 @@ public class FetchOffersRestTemplateErrorIntegrationTest {
         assertThat(throwable.getMessage()).isEqualTo("500 INTERNAL_SERVER_ERROR");
     }
     @Test
-    public void should_throw_response_status_exception_when_fault_empty_response(){
+    public void should_throw_exception_500_when_fault_empty_response(){
         //given
         wireMockServer.stubFor(WireMock.get("/offers")
                 .willReturn(WireMock.aResponse()
@@ -64,7 +58,7 @@ public class FetchOffersRestTemplateErrorIntegrationTest {
         assertThat(throwable.getMessage()).isEqualTo("500 INTERNAL_SERVER_ERROR");
     }
     @Test
-    public void should_throw_response_status_exception_when_fault_malformed_response_chunk(){
+    public void should_throw_exception_500_when_fault_malformed_response_chunk(){
         //given
         wireMockServer.stubFor(WireMock.get("/offers")
                 .willReturn(WireMock.aResponse()
@@ -79,7 +73,7 @@ public class FetchOffersRestTemplateErrorIntegrationTest {
         assertThat(throwable.getMessage()).isEqualTo("500 INTERNAL_SERVER_ERROR");
     }
     @Test
-    public void should_throw_response_status_exception_when_fault_random_data_then_close(){
+    public void should_throw_exception_500_when_fault_random_data_then_close(){
         //given
         wireMockServer.stubFor(WireMock.get("/offers")
                 .willReturn(WireMock.aResponse()
@@ -94,7 +88,7 @@ public class FetchOffersRestTemplateErrorIntegrationTest {
         assertThat(throwable.getMessage()).isEqualTo("500 INTERNAL_SERVER_ERROR");
     }
     @Test
-    public void should_throw_response_status_exception_when_fixed_delay_is_set_to_3000_and_readTimeout_is_set_to_1500(){
+    public void should_throw_exception_500_when_fixed_delay_is_set_to_3000_and_readTimeout_is_set_to_1500(){
         //given
         wireMockServer.stubFor(WireMock.get("/offers")
                 .willReturn(WireMock.aResponse()
@@ -118,7 +112,7 @@ public class FetchOffersRestTemplateErrorIntegrationTest {
     }
 
     @Test
-    public void should_throw_response_status_exception_when_fault_no_content(){
+    public void should_throw_exception_204_when_fault_no_content(){
         //given
         wireMockServer.stubFor(WireMock.get("/offers")
                 .willReturn(WireMock.aResponse()
@@ -140,7 +134,7 @@ public class FetchOffersRestTemplateErrorIntegrationTest {
         assertThat(throwable.getMessage()).isEqualTo("204 NO_CONTENT");
     }
     @Test
-    public void should_throw_response_status_exception_when_status_unauthorized(){
+    public void should_throw_exception_401_when_status_unauthorized(){
         //given
         wireMockServer.stubFor(WireMock.get("/offers")
                 .willReturn(WireMock.aResponse()
@@ -155,7 +149,7 @@ public class FetchOffersRestTemplateErrorIntegrationTest {
         assertThat(throwable.getMessage()).isEqualTo("401 UNAUTHORIZED");
     }
     @Test
-    public void should_throw_response_status_exception_when_status_not_found(){
+    public void should_throw_exception_404_when_status_not_found(){
         //given
         wireMockServer.stubFor(WireMock.get("/offers")
                 .willReturn(WireMock.aResponse()

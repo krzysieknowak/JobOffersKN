@@ -16,8 +16,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 import pl.joboffers.BaseIntegrationTest;
 import pl.joboffers.TestOffersDto;
+import pl.joboffers.domain.loginandregister.loginandregisterdto.RegistrationResultDto;
 import pl.joboffers.domain.offer.offerdto.SaveOfferResultDto;
-import pl.joboffers.infrastructure.security.jwt.offer.scheduler.OfferScheduler;
+import pl.joboffers.infrastructure.offer.scheduler.OfferScheduler;
 
 import java.util.List;
 
@@ -59,10 +60,53 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
         //then
         assertThat(fetchedOffers).isEmpty();
 
-//        3. user tries to get a JVT Token using GET /token and gets unauthorized(401)
-//        4. user tries to see offers with no token using GET /offers and get unauthorized(401)
-//        5. user creates account using  POST /register, providing login and password
-//        6. user get token using POST /token providing login and password and system returned OK (200) and a token code
+
+//        3. user tries to get a JWT Token using POST /token with some username(testUsername) and password(testPassword) and gets unauthorized(401)
+        //given & when
+        ResultActions performLoginFailed = mockMvc.perform(post("/token").content(
+                """
+                        {
+                            "username" : "testUsername",
+                            "password" : "testPassword"
+                        }
+                        """.trim()).contentType(MediaType.APPLICATION_JSON_VALUE));
+        //then
+        performLoginFailed.andExpect(status().isUnauthorized())
+                .andExpect(content().json("""
+                                {
+                                "message" : "Bad credentials",
+                                "status" : "UNAUTHORIZED"
+                                }
+                """.trim()));
+
+
+//        4. user tries to see offers with no token using GET /offers and get forbidden (403)
+        //given & when
+        ResultActions performGetOffersWithNoToken = mockMvc.perform(get("/offers").contentType(MediaType.APPLICATION_JSON));
+        //then
+        performGetOffersWithNoToken.andExpect(status().isForbidden());
+
+
+//        5. user creates account using  POST /register, providing login and password and gets 201 CREATED
+        //given & when
+        ResultActions performRegister = mockMvc.perform(post("/register")
+                        .content(("""
+                            {
+                            "username" : "testUsername",
+                            "password" : "testPassword"
+                            }
+                                         """.trim())).contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        MvcResult mvcRegisterResult = performRegister.andExpect(status().isCreated()).andReturn();
+        String jsonRegisterResult = mvcRegisterResult.getResponse().getContentAsString();
+        RegistrationResultDto mappedFromJsonToInstance =objectMapper.readValue(jsonRegisterResult, RegistrationResultDto.class);
+        assertAll(
+                ()-> assertThat(mappedFromJsonToInstance.username()).isEqualTo("testUsername"),
+                ()-> assertThat(mappedFromJsonToInstance.isCreated()).isTrue(),
+                ()-> assertThat(mappedFromJsonToInstance.id()).isNotNull()
+        );
+//        6. user get token using POST /token providing login and password and system returned OK (200) and a JWT token code
 
 
 //        7. user made GET /offers with token and got returned 200 (OK) and 0 offers

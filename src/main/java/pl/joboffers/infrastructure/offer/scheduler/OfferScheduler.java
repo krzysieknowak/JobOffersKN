@@ -1,4 +1,4 @@
-package pl.joboffers.infrastructure.security.jwt.offer.scheduler;
+package pl.joboffers.infrastructure.offer.scheduler;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;

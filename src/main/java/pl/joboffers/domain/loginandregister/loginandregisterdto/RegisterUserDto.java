@@ -1,4 +1,10 @@
 package pl.joboffers.domain.loginandregister.loginandregisterdto;
 
-public record RegisterUserDto(String username, String password) {
+import javax.validation.constraints.NotBlank;
+
+public record RegisterUserDto(
+        @NotBlank(message = "{username.not.blank")
+        String username,
+        @NotBlank(message = "{password.not.blank}")
+        String password) {
 }

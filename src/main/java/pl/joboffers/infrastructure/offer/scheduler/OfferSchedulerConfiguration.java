@@ -1,4 +1,4 @@
-package pl.joboffers.infrastructure.security.jwt.offer.scheduler;
+package pl.joboffers.infrastructure.offer.scheduler;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Conditional;
