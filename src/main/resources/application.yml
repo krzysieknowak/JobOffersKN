@@ -14,6 +14,11 @@ offer:
         readTimeout: 5000
         uri: http://ec2-3-120-147-150.eu-central-1.compute.amazonaws.com
         port: 5057
+auth:
+  token:
+    secret: ${JWT_SECRET}
+    issuer: Job-Offers-Service
+    expirationInDays: 30
 
 http:
   offers:
