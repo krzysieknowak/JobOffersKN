@@ -18,9 +18,11 @@ import pl.joboffers.BaseIntegrationTest;
 import pl.joboffers.TestOffersDto;
 import pl.joboffers.domain.loginandregister.loginandregisterdto.RegistrationResultDto;
 import pl.joboffers.domain.offer.offerdto.SaveOfferResultDto;
+import pl.joboffers.infrastructure.loginandregister.controller.JwtResultDto;
 import pl.joboffers.infrastructure.offer.scheduler.OfferScheduler;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -45,7 +47,7 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
 
     @Test
     public void should_user_see_offers_but_have_to_be_logged_in_beforehand_and_external_server_should_have_some_offers() throws Exception {
-//        1. there are no offers in external HTTP server
+//      1. there are no offers in external HTTP server
         //given&when&then
         wireMockServer.stubFor(WireMock.get("/offers")
                         .willReturn(WireMock.aResponse()
@@ -54,14 +56,14 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
                                 .withBody(bodyWithZeroOffers())));
 
 
-//        2. scheduler ran 1st time and made GET to external server and system added 0 offers to database
+//      2. scheduler ran 1st time and made GET to external server and system added 0 offers to database
         //given&when
         List<SaveOfferResultDto> fetchedOffers = offerScheduler.fetchAllOffersAndSaveIfNotExist();
         //then
         assertThat(fetchedOffers).isEmpty();
 
 
-//        3. user tries to get a JWT Token using POST /token with some username(testUsername) and password(testPassword) and gets unauthorized(401)
+//      3. user tries to get a JWT Token using POST /token with some username(testUsername) and password(testPassword) and gets unauthorized(401)
         //given & when
         ResultActions performLoginFailed = mockMvc.perform(post("/token").content(
                 """
@@ -80,16 +82,16 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
                 """.trim()));
 
 
-//        4. user tries to see offers with no token using GET /offers and get forbidden (403)
+//      4. user tries to see offers with no token using GET /offers and get forbidden (403)
         //given & when
         ResultActions performGetOffersWithNoToken = mockMvc.perform(get("/offers").contentType(MediaType.APPLICATION_JSON));
         //then
         performGetOffersWithNoToken.andExpect(status().isForbidden());
 
 
-//        5. user creates account using  POST /register, providing login and password and gets 201 CREATED
+//      5. user creates account using  POST /register, providing login and password and gets 201 CREATED
         //given & when
-        ResultActions performRegister = mockMvc.perform(post("/register")
+        ResultActions performFailedLogin = mockMvc.perform(post("/register")
                         .content(("""
                             {
                             "username" : "testUsername",
@@ -98,7 +100,7 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
                                          """.trim())).contentType(MediaType.APPLICATION_JSON));
 
         //then
-        MvcResult mvcRegisterResult = performRegister.andExpect(status().isCreated()).andReturn();
+        MvcResult mvcRegisterResult = performFailedLogin.andExpect(status().isCreated()).andReturn();
         String jsonRegisterResult = mvcRegisterResult.getResponse().getContentAsString();
         RegistrationResultDto mappedFromJsonToInstance =objectMapper.readValue(jsonRegisterResult, RegistrationResultDto.class);
         assertAll(
@@ -106,19 +108,39 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
                 ()-> assertThat(mappedFromJsonToInstance.isCreated()).isTrue(),
                 ()-> assertThat(mappedFromJsonToInstance.id()).isNotNull()
         );
-//        6. user get token using POST /token providing login and password and system returned OK (200) and a JWT token code
 
 
-//        7. user made GET /offers with token and got returned 200 (OK) and 0 offers
+//      6. user get token using POST /token providing login and password and system returned OK (200) and a JWT token code
+        //given & when
+        ResultActions performSuccessLogin = mockMvc.perform(post("/token")
+                .content(("""
+                            {
+                            "username" : "testUsername",
+                            "password" : "testPassword"
+                            }
+                                         """.trim())).contentType(MediaType.APPLICATION_JSON));
+        //then
+        MvcResult mvcSuccessLoginResult = performSuccessLogin.andExpect(status().isOk()).andReturn();
+        String jsonToStringSuccess = mvcSuccessLoginResult.getResponse().getContentAsString();
+        JwtResultDto jwtResultDto = objectMapper.readValue(jsonToStringSuccess, JwtResultDto.class);
+        String token = jwtResultDto.token();
+        assertAll(
+                ()-> assertThat(jwtResultDto.username()).isEqualTo("testUsername"),
+                ()-> assertThat(token).matches(Pattern.compile("^([a-zA-Z0-9_=]+)\\.([a-zA-Z0-9_=]+)\\.([a-zA-Z0-9_\\-\\+\\/=]*)")));
+
+
+//      7. user made GET /offers with header "Authorizarion : Bearer AAAA.BBBB.CCCC"  and got returned 200 (OK) and 0 offers
         //given&when
         ResultActions performGetAllOffers = mockMvc.perform(get("/offers")
-                .contentType(MediaType.APPLICATION_JSON));
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
         //then
         MvcResult mvcResult = performGetAllOffers.andExpect(status().isOk()).andReturn();
         String jsonResult = mvcResult.getResponse().getContentAsString();
         List<SaveOfferResultDto> offers = objectMapper.readValue(jsonResult, new TypeReference<>() {
         });
         assertThat(offers).hasSize(0);
+
 
 //        8. there are two offers in external http server
         //given&when&then
@@ -139,7 +161,9 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
 
 //        10. user tries GET /offers with token and gets 200(OK) with 2 offers with ids 1, 2
         //given&when
-        ResultActions performGetAllOffers2 = mockMvc.perform(get("/offers"));
+        ResultActions performGetAllOffers2 = mockMvc.perform(get("/offers")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON));
         //then
         MvcResult mvcResult2 = performGetAllOffers2.andExpect(status().isOk()).andReturn();
         String jsonResult2 = mvcResult2.getResponse().getContentAsString();
@@ -153,7 +177,9 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
         //given
         String id = "1234";
         //when
-        ResultActions performGetOfferById = mockMvc.perform(get("/offers/" + id));
+        ResultActions performGetOfferById = mockMvc.perform(get("/offers/" + id)
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON));
         //then
         performGetOfferById.andExpect(status().isNotFound())
                 .andExpect(content().json("""
@@ -167,7 +193,9 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
         SaveOfferResultDto expectedOffer = offers2.get(0);
         String idFirstOffer = offers2.get(0).id();
         //when
-        ResultActions performGetOfferWithIdOne = mockMvc.perform(get("/offers/" + idFirstOffer));
+        ResultActions performGetOfferWithIdOne = mockMvc.perform(get("/offers/" + idFirstOffer)
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON));
         //then
         MvcResult mvcResultOfferWithIdOne = performGetOfferWithIdOne.andExpect(status().isOk()).andReturn();
         String jsonOfferWithIdOne = mvcResultOfferWithIdOne.getResponse().getContentAsString();
@@ -198,7 +226,9 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
 
         //15 user tries GET /offers with token and gets 200(OK) with 2 offers with ids 1, 2, 3, 4
         //given&when
-        ResultActions performGetAllOffers3 = mockMvc.perform(get("/offers"));
+        ResultActions performGetAllOffers3 = mockMvc.perform(get("/offers")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON));
         //then
         MvcResult mvcResult3 = performGetAllOffers3.andExpect(status().isOk()).andReturn();
         String jsonResult3 = mvcResult3.getResponse().getContentAsString();
@@ -218,6 +248,7 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
                                 "earnings": "4000"
                             }
                             """.trim())
+                .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON));
         //then
         String json = performAddOffer.andExpect(status().isCreated())
@@ -236,7 +267,9 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
         );
         //17. user tries GET/offers and gets 200(OK) with 5 offers
         //given
-        ResultActions performGetOneOffer = mockMvc.perform(get("/offers"));
+        ResultActions performGetOneOffer = mockMvc.perform(get("/offers")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON));
         //when
         String jsonOneOffer = performGetOneOffer.andExpect(status().isOk())
                 .andReturn()
