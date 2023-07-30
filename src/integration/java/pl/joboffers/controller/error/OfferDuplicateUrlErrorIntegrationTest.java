@@ -3,6 +3,7 @@ package pl.joboffers.controller.error;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.ResultActions;
@@ -11,8 +12,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 import pl.joboffers.BaseIntegrationTest;
 import pl.joboffers.domain.offer.offerdto.SaveOfferResultDto;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -31,6 +30,7 @@ public class OfferDuplicateUrlErrorIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @WithMockUser
     public void should_return_409_conflict_error_when_user_adds_offer_with_url_that_already_exists() throws Exception {
         //step 1
         //Adding offer with url that is not already in database and getting 201 (CREATED) and
