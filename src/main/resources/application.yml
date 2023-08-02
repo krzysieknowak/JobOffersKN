@@ -1,4 +1,11 @@
 spring:
+  cache:
+    type: redis
+    redis:
+      time-to-live: PT60M
+  redis:
+    port: ${REDIS_PORT:63792}
+    host: ${REDIS_HOST:localhost}
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher

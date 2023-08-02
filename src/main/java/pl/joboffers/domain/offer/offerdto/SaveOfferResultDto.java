@@ -2,7 +2,7 @@ package pl.joboffers.domain.offer.offerdto;
 
 import lombok.Builder;
 
-import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Builder
 public record SaveOfferResultDto(
@@ -10,5 +10,5 @@ public record SaveOfferResultDto(
         String offerUrl,
         String jobPosition,
         String companyName,
-        String earnings) {
+        String earnings) implements Serializable {
 }
