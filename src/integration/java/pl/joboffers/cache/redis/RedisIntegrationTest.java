@@ -20,14 +20,15 @@ import pl.joboffers.BaseIntegrationTest;
 import pl.joboffers.domain.offer.OfferFacade;
 import pl.joboffers.infrastructure.loginandregister.controller.JwtResultDto;
 
+import java.time.Duration;
+
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.awaitility.Awaitility.await;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 public class RedisIntegrationTest extends BaseIntegrationTest {
 
@@ -92,5 +93,17 @@ public class RedisIntegrationTest extends BaseIntegrationTest {
         //then
         performGetAllOffers.andExpect(status().isOk()).andReturn();
         verify(offerFacade, times(1)).findAllOffers();
+
+        //step 4 cache should be invalidated by the time to live
+        // given && when && then
+        await()
+                .atMost(Duration.ofSeconds(4))
+                .pollInterval(Duration.ofSeconds(1))
+                .untilAsserted(()-> {
+                    mockMvc.perform(get("/offers")
+                            .header("Authorization", "Bearer " + token)
+                            .contentType(MediaType.APPLICATION_JSON));
+                    verify(offerFacade, atLeast(2)).findAllOffers();
+                });
     }
 }
