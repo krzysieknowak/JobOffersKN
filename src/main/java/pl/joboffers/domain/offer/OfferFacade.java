@@ -28,7 +28,7 @@ public class OfferFacade {
                 .map(OfferMapper::mapFromOfferToSaveOfferDto)
                 .toList();
     }
-    @Cacheable(cacheNames = "jobOffers")
+    @Cacheable(value = "jobOffers")
     public List<SaveOfferResultDto> findAllOffers() {
         return offerRepository.findAll()
                 .stream()
