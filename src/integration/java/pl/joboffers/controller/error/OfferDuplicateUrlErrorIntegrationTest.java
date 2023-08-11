@@ -39,7 +39,7 @@ public class OfferDuplicateUrlErrorIntegrationTest extends BaseIntegrationTest {
         ResultActions performAddGivenOfferFirstTime = mockMvc.perform(post("/offers")
                 .content("""
                         {
-                            "offerUrl" : "dupa.pl",
+                            "offerUrl" : "google.pl",
                             "jobPosition" : "koparkowy",
                             "companyName": "gugl",
                             "earnings": "4000"
@@ -54,7 +54,7 @@ public class OfferDuplicateUrlErrorIntegrationTest extends BaseIntegrationTest {
         SaveOfferResultDto savedOffer = objectMapper.readValue(jsonContentAsString, new TypeReference<>() {
         });
         assertAll(
-                ()-> assertThat(savedOffer.offerUrl()).isEqualTo("dupa.pl"),
+                ()-> assertThat(savedOffer.offerUrl()).isEqualTo("google.pl"),
                 ()-> assertThat(savedOffer.companyName()).isEqualTo("gugl"),
                 ()-> assertThat(savedOffer.earnings()).isEqualTo("4000"),
                 ()-> assertThat(savedOffer.jobPosition()).isEqualTo("koparkowy"),
@@ -68,7 +68,7 @@ public class OfferDuplicateUrlErrorIntegrationTest extends BaseIntegrationTest {
         ResultActions performAddGivenOfferSecondTime = mockMvc.perform(post("/offers")
                 .content("""
                         {
-                            "offerUrl" : "dupa.pl",
+                            "offerUrl" : "google.pl",
                             "jobPosition" : "koparkowy",
                             "companyName": "gugl",
                             "earnings": "4000"

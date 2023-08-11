@@ -22,7 +22,7 @@ public class ApiErrorValidationFailedIntegrationText extends BaseIntegrationTest
         ResultActions performAddOffer = mockMvc.perform(post("/offers")
                 .content("""
                                             {
-                                            "offerUrl" : "dupa.pl",
+                                            "offerUrl" : "google.pl",
                                             "jobPosition" : "koparkowy",
                                             "companyName" : "gugl"
                                             }
