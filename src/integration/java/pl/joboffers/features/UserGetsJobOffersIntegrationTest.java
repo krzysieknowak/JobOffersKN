@@ -242,7 +242,7 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
         ResultActions performAddOffer = mockMvc.perform(post("/offers")
                 .content("""
                             {
-                                "offerUrl" : "dupa.pl",
+                                "offerUrl" : "google.pl",
                                 "jobPosition" : "koparkowy",
                                 "companyName": "gugl",
                                 "earnings": "4000"
@@ -259,7 +259,7 @@ public class UserGetsJobOffersIntegrationTest extends BaseIntegrationTest implem
         SaveOfferResultDto parsedCreatedOfferJson = objectMapper.readValue(json, SaveOfferResultDto.class);
         String idParsedOfferJson = parsedCreatedOfferJson.id();
         assertAll(
-                ()-> assertThat(parsedCreatedOfferJson.offerUrl()).isEqualTo("dupa.pl"),
+                ()-> assertThat(parsedCreatedOfferJson.offerUrl()).isEqualTo("google.pl"),
                 ()-> assertThat(parsedCreatedOfferJson.companyName()).isEqualTo("gugl"),
                 ()-> assertThat(parsedCreatedOfferJson.earnings()).isEqualTo("4000"),
                 ()-> assertThat(parsedCreatedOfferJson.jobPosition()).isEqualTo("koparkowy"),

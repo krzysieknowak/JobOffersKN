@@ -3,15 +3,12 @@ package pl.joboffers.cache.redis;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.testcontainers.containers.GenericContainer;
@@ -23,7 +20,7 @@ import pl.joboffers.infrastructure.loginandregister.controller.JwtResultDto;
 import java.time.Duration;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,6 +34,9 @@ public class RedisIntegrationTest extends BaseIntegrationTest {
 
     @SpyBean
     OfferFacade offerFacade;
+
+    @Autowired
+    CacheManager cacheManager;
 
     static {
         REDIS = new GenericContainer<>("redis").withExposedPorts(6379);
@@ -93,6 +93,8 @@ public class RedisIntegrationTest extends BaseIntegrationTest {
         //then
         performGetAllOffers.andExpect(status().isOk()).andReturn();
         verify(offerFacade, times(1)).findAllOffers();
+        assertThat(cacheManager.getCacheNames().contains("jobOffers")).isTrue();
+
 
         //step 4 cache should be invalidated by the time to live
         // given && when && then
