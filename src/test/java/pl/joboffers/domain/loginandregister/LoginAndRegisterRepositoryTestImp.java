@@ -24,19 +24,6 @@ public class LoginAndRegisterRepositoryTestImp implements UserRepository {
                 .findFirst();
     }
 
-//    @Override
-//    public User save(User entity) {
-//        UUID generatedId = UUID.randomUUID();
-//        User user = User
-//                .builder()
-//                .id(generatedId.toString())
-//                .username(entity.username())
-//                .password(entity.password())
-//                .build();
-//        inMemoryDatabase.put(user.username(), user);
-//        return user;
-//    }
-
     @Override
     public <S extends User> S save(S entity) {
         UUID generatedId = UUID.randomUUID();
