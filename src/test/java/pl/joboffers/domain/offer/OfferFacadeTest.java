@@ -106,9 +106,7 @@ public class OfferFacadeTest {
         assertThat(offerFacade.findAllOffers().isEmpty());
         String id = "7";
         //when
-        Throwable throwable = assertThrows(OfferNotFoundException.class, ()-> {
-            offerFacade.findOfferById(id);
-        });
+        Throwable throwable = assertThrows(OfferNotFoundException.class, ()-> offerFacade.findOfferById(id));
         //then
         assertThat(throwable.getMessage()).isEqualTo("Offer with id 7 is not found");
     }
