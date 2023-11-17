@@ -1,6 +1,6 @@
 
-[![Vacancy-Tracker.png](https://i.postimg.cc/P5bNmzDD/Vacancy-Tracker.png)](https://postimg.cc/VJ6YwtDs)
 
+[![Vacancy-Tracker.png](https://i.postimg.cc/P5bNmzDD/Vacancy-Tracker.png)](https://postimg.cc/VJ6YwtDs)
 
 ### VacancyTracker
 
@@ -31,36 +31,30 @@ This is a fairly simple c3 diagram that allows a quick overview of the applicati
 
 
 
-```http
-```
+
 
 | ENDPOINT | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `/offers` | `GET` | gets all offers in JSON format
 
 
-```http
-```
+
 | ENDPOINT | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
 | `/offers/{id}`| `POST` | gets offer by ID in JSON format|
 
-```http
-```
+
 
 | ENDPOINT | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
 | `/offers`      | `POST` | posts offer to database in JSON format|
 
-```http
-```
+
 
 | ENDPOINT | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `/register` | `POST` | saves user to database
 
-```http
-```
 
 | ENDPOINT | Type     | Description                |
 | :-------- | :------- | :------------------------- |
@@ -107,3 +101,4 @@ To stop the application and shut down the services, you can use the following co
 ```bash
   docker-compose down
 ```
+
